@@ -1,14 +1,12 @@
 import type {
+  Provider,
   EvaluationContext,
   JsonValue,
   Logger,
   Paradigm,
   ProviderMetadata,
   ResolutionDetails,
-} from '@openfeature/core'
-import type { Provider } from '@openfeature/web-sdk'
-
-import { StandardResolutionReasons } from '@openfeature/core'
+} from '@openfeature/web-sdk'
 
 // We need to use a class here to properly implement the OpenFeature Provider interface
 // which requires class methods and properties. This is a valid exception to the no-classes rule.
@@ -27,7 +25,7 @@ export class DatadogProvider implements Provider {
   ): ResolutionDetails<boolean> {
     return {
       value: defaultValue,
-      reason: StandardResolutionReasons.DEFAULT,
+      reason: 'DEFAULT',
     }
   }
 
@@ -39,7 +37,7 @@ export class DatadogProvider implements Provider {
   ): ResolutionDetails<string> {
     return {
       value: defaultValue,
-      reason: StandardResolutionReasons.DEFAULT,
+      reason: 'DEFAULT',
     }
   }
 
@@ -51,7 +49,7 @@ export class DatadogProvider implements Provider {
   ): ResolutionDetails<number> {
     return {
       value: defaultValue,
-      reason: StandardResolutionReasons.DEFAULT,
+      reason: 'DEFAULT',
     }
   }
 
@@ -63,7 +61,7 @@ export class DatadogProvider implements Provider {
   ): ResolutionDetails<T> {
     return {
       value: defaultValue,
-      reason: StandardResolutionReasons.DEFAULT,
+      reason: 'DEFAULT',
     }
   }
 }
