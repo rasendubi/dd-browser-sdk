@@ -8,6 +8,9 @@ import type {
   ResolutionDetails,
 } from '@openfeature/web-sdk'
 
+import type { Configuration } from '../configuration'
+import { evaluate } from '../evaluation'
+
 // We need to use a class here to properly implement the OpenFeature Provider interface
 // which requires class methods and properties. This is a valid exception to the no-classes rule.
 /* eslint-disable-next-line no-restricted-syntax */
@@ -17,51 +20,47 @@ export class DatadogProvider implements Provider {
   }
   readonly runsOn: Paradigm = 'client'
 
+  private configuration: Configuration = {}
+
   resolveBooleanEvaluation(
-    _flagKey: string,
+    flagKey: string,
     defaultValue: boolean,
-    _context: EvaluationContext,
+    context: EvaluationContext,
     _logger: Logger
   ): ResolutionDetails<boolean> {
-    return {
-      value: defaultValue,
-      reason: 'DEFAULT',
-    }
+    return evaluate(this.configuration, 'boolean', flagKey, defaultValue, context)
   }
 
   resolveStringEvaluation(
-    _flagKey: string,
+    flagKey: string,
     defaultValue: string,
-    _context: EvaluationContext,
+    context: EvaluationContext,
     _logger: Logger
   ): ResolutionDetails<string> {
-    return {
-      value: defaultValue,
-      reason: 'DEFAULT',
-    }
+    return evaluate(this.configuration, 'string', flagKey, defaultValue, context)
   }
 
   resolveNumberEvaluation(
-    _flagKey: string,
+    flagKey: string,
     defaultValue: number,
-    _context: EvaluationContext,
+    context: EvaluationContext,
     _logger: Logger
   ): ResolutionDetails<number> {
-    return {
-      value: defaultValue,
-      reason: 'DEFAULT',
-    }
+    return evaluate(this.configuration, 'number', flagKey, defaultValue, context)
   }
 
   resolveObjectEvaluation<T extends JsonValue>(
-    _flagKey: string,
+    flagKey: string,
     defaultValue: T,
-    _context: EvaluationContext,
+    context: EvaluationContext,
     _logger: Logger
   ): ResolutionDetails<T> {
-    return {
-      value: defaultValue,
-      reason: 'DEFAULT',
-    }
+    // type safety: OpenFeature interface requires us to return a
+    // specific T for *any* value of T (which could be any subtype of
+    // JsonValue). We can't even theoretically implement it in a
+    // type-sound way because there's no runtime information passed to
+    // learn what type the user expects. So it's up to the user to
+    // makesure they pass the appropriate type.
+    return evaluate(this.configuration, 'object', flagKey, defaultValue, context) as ResolutionDetails<T>
   }
 }
